@@ -23,6 +23,8 @@
 
 // Program constant definitions
 const unsigned char maxCount = 50;
+ #define pressed 0
+ #define notPressed 1
 
 // Program variable definitions
 unsigned char SW2Count = 0;
@@ -37,21 +39,33 @@ int main(void)
     // Code in this while loop runs repeatedly.
     while(1)
 	{
-        // Count SW2 button presses
-        if(SW2 == 0)
+        // Count new SW2 button presses
+        if(SW2 == 0 && SW2Pressed == false)
         {
             LED3 = 1;
-            SW2Count = SW2Count + 1;
+            SW2Pressed = true;
+            if(SW2Count < 255)
+            {
+                SW2Count = SW2Count + 1;
+            }
         }
-        else
+
+        // Clear pressed state if released
+        if(SW2 == 1)
         {
             LED3 = 0;
+            SW2Pressed = false;
         }
         
         if(SW2Count >= maxCount)
         {
             LED4 = 1;
         }
+        else
+        {
+            LED4 = 0;
+        }
+        
         
         // Reset count and turn off LED D4
         if(SW3 == 0)
@@ -79,16 +93,23 @@ int main(void)
  *    What are some benefits and drawbacks of using 8-bit variables in an 8-bit
  *    microcontroller?
  * 
+ * The maximum value an 8=bit variable can store is 256
+ * 
  * 2. The constant 'maxCount' is defined using a declaration similar to that
  *    used for the SW2Count variable, but with the 'const' prefix added in the
  *    declaration. Can you think of some advantages of declaring a constant like
  *    this, using a separate statement above the main code, rather than just
  *    embedding the value of the constant where it is needed in the code?
  * 
+ * If the variable is using the constant prefix then it means it won't be able 
+ * to change. 
+ * 
  * 3. This program should light LED D3 every time SW2 is pressed, and light
  *    LED D4 once the count reaches 50. Try it, and count how many times you
  *    have to press the button until LED D4 turns on. SW3 resets the count so
  *    you can perform repeated attempts.
+ * 
+ * You would have to press the button 5 times for LED D4 to turn on.
  * 
  *    Did your count reach 50? Can you describe what the program is doing?
  *    (Hint: try pressing and releasing the button at different rates of speed.)
@@ -110,6 +131,8 @@ int main(void)
  *    value of the SW2Count variable? Can you explain what happens to the
  *    SW2Count variable as the SW2 button is held?
  * 
+ * While SW2 is held, the SW2Count variable increases
+ * 
  * 5. We can set a limit on the SW2Count variable by encapsulating its increment
  *    statement inside a conditional statement. In your program, replace the
  *    line 'SW2Count = SW2Count + 1;' with the code, below:
@@ -124,6 +147,8 @@ int main(void)
  *    to the current SW2COunt value is performed, but in a more compact form.
  *    Adding this code, what is the maximum value that the SW2Count variable
  *    will reach? How does this affect the operation of LED D4 when SW2 is held?
+ * 
+ * It doesn't affect the operation of LED D4.
  *
  * 6. The fundamental problem with this program is that pushbutton SW2 is sensed
  *    in each cycle of the loop and if its state is read as pressed, another
